@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+
+	<constant name="struts.devMode" value="true" />
+	<package name="default" namespace="/" extends="struts-default">
+		<!-- 登录拦截器 -->
+		<interceptors>
+			<interceptor name="loginInterceptor"
+				class="com.javaweb.interceptor.LoginInterceptor">
+				<param name="excludeMethods">loginUI,login</param>
+			</interceptor>
+		</interceptors>
+		<!--全局结果 -->
+		<global-results>
+			<result name="nosysUser">WEB-INF/jsp/sysUserlogin.jsp</result>
+		</global-results>
+		<!-- 首页action -->
+		<action name="index" class="indexAction">
+			<result>WEB-INF/jsp/index.jsp</result>
+		</action>
+		<!-- AppUserAction -->
+		<action name="appuser_*" class="appUserAction" method="{1}">
+			<result name="registUI">WEB-INF/jsp/publishAppUser.jsp</result>
+			<result name="registSuccess">WEB-INF/jsp/registSuccess.jsp</result>
+			<result name="modifyUI">WEB-INF/jsp/modifyAppUserUI.jsp</result>
+			<result name="modifySuccess">WEB-INF/jsp/modifySuccess.jsp</result>
+			<result name="queryAppUserPage">WEB-INF/jsp/queryAppUserPage.jsp</result>
+			<interceptor-ref name="loginInterceptor"></interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+		</action>
+
+		<!-- SysUserAction -->
+		<action name="sysuser_*" class="sysUserAction" method="{1}">
+			<result name="loginSuccess" type="redirectAction">sysuser_mainUI</result>
+			<result name="mainUI">WEB-INF/jsp/main.jsp</result>
+			<result name="loginFail">WEB-INF/jsp/sysUserlogin.jsp</result>
+			<result name="loginUI">WEB-INF/jsp/sysUserlogin.jsp</result>
+			<result name="quitSuccess">WEB-INF/jsp/sysUserlogin.jsp</result>
+			<result name="querySysUserPage">WEB-INF/jsp/querySysUserPage.jsp</result>
+			<result name="registUI">WEB-INF/jsp/publishSysUserUI.jsp</result>
+			<result name="modifyUI">WEB-INF/jsp/modifySysUserUI.jsp</result>
+			<interceptor-ref name="loginInterceptor"></interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+		</action>
+
+		<!-- AnnounceAction -->
+		<action name="announce_*" class="announceAction" method="{1}">
+			<result name="publishUI">WEB-INF/jsp/publishAnnounceUI.jsp</result>
+			<result name="publishSuccess">WEB-INF/jsp/publishSuccess.jsp</result>
+			<result name="allAnnounce">WEB-INF/jsp/queryAnnouncePage.jsp</result>
+			<result name="modifyAnnounceUI">WEB-INF/jsp/modifyAnnounceUI.jsp</result>
+			<result name="deleteAnnounceSuccess" type="redirectAction">announce_queryAllAnnounce
+			</result>
+			<result name="modifyAnnounceSuccess">WEB-INF/jsp/modifyAnnounceSuccess.jsp</result>
+			<interceptor-ref name="loginInterceptor"></interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+		</action>
+
+
+		<!-- AdvertisementAction -->
+		<action name="advertisement_*" class="advertisementAction"
+			method="{1}">
+			<result name="publishUI">WEB-INF/jsp/publishAdvertisementUI.jsp</result>
+			<result name="publishSuccess" type="redirectAction">advertisement_allAdvertisement
+			</result>
+			<result name="allAdvertisement">WEB-INF/jsp/queryAdvertisementPage.jsp</result>
+			<result name="deleteSuccess" type="redirectAction">advertisement_allAdvertisement
+			</result>
+			<result name="modifyUI">WEB-INF/jsp/modifyAdvertisementUI.jsp</result>
+			<result name="modifySuccess" type="redirectAction">advertisement_allAdvertisement
+			</result>
+			<result name="appAdvertisement">WEB-INF/appjsp/appAdvertisement.jsp</result>
+			<interceptor-ref name="loginInterceptor"></interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+		</action>
+
+
+		<!-- AlipayAction -->
+		<action name="alipayAction_*" class="alipayAction" method="{1}">
+			<result name="toPayPage">alipay/toPayPage.jsp</result>
+		</action>
+
+	</package>
+</struts>
