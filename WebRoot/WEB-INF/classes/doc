@@ -1,0 +1,77 @@
+JPA：Java Persistence API
+
+类级别注解：
+	Entity表明一个实体，name为表名称，catalog:mysql不支持，schema数据库名称，uniqueConstraints指定字段唯一
+	@Entity
+	@Table(name="student",catalog="",schema="hibernate",uniqueConstraints={@UniqueConstraint(columnNames={"age"})})
+    @Embeddable//表示一个嵌入类，在其他实体类中充当属性 
+属性级别注解：   可以放在属性上，也可以放在getXXX()访问器上
+	@Id
+	             必须要有的，若有多个主键属性，则实体类必须要实现Serializale接口
+	   	若主键为String，则必须要用@Column(length=XX)缩短其长度
+	@SequenceGenerator
+	@GeneratedValue(strategy=XX,generator="")
+		主键为整型：
+		 	 主键生成策略strategy：四种
+		主键为String：
+		               则该主键需要 用到hibernate的generator，手工赋值的生成策略
+		            @GeneratedValue(generator="sid")
+	                @GenericGenerator(name="sid",strategy="assigned")
+	@Column
+	@Embedded ：属性上加入该注解，表明该类是个嵌入类
+	
+	@EmbeddedId
+	           属性上加上该注解
+	           嵌入类也必须写有@Embeddable//表示一个嵌入类，在其他实体类中充当属性 
+	           嵌入式主键类实现复合主键，嵌入式主键类必须实现serializable接口，必须有默认的public无参数的构造方法，必须覆盖equals和hashCode方法
+	@Lob
+	@Version
+	@Basic
+	@Transient:加上该注解则不能映射到数据库，会忽略
+
+映射关系：
+
+ 一对一单向外键关联：保存时先保存外键对象，再保存主表对象            
+                                      参考：Person类和IDCARD类
+      		 @OneToOne(cascade=CascadeType.ALL)
+	 		 @JoinColumn(name="idd",unique=true)
+ 一对一双向外键关联：   
+                                  双向关联必须要设置mappedBy属性，因为双向关联只能交给一方去控制，不可能双方都设置外键保存关联关系，否则双方都无法保存
+                                 主控方的配置同一对一单项外键关联    
+                                  被控方需要加上：@OneToOne(mappedBy="card")
+              	
+ 一对一的双向联合主键关联：
+ 				需要加入联合主键类
+	   
+  多对一单项外键：多方持有一方时，为积极加载
+                   多方 ：
+		@ManyToOne(cascade={CascadeType.ALL},fetch=FetchType.EAGER)
+	    @JoinColumn(name="crid",referencedColumnName="crid")
+
+一对多单项外键关联：即一方持有多方的集合  ，普遍为懒加载      	 
+	@OneToMany(cascade={CascadeType.ALL},fetch=FetchType.LAZY)
+	@JoinColumn(name="crid",referencedColumnName="crid")
+一对多双向关联：
+             单方：
+    @OneToMany(cascade={CascadeType.ALL},fetch=FetchType.LAZY)
+	@JoinColumn(name="crid",referencedColumnName="crid")
+	多方：
+	@ManyToOne(cascade={CascadeType.ALL},fetch=FetchType.EAGER)
+	@JoinColumn(name="crid",referencedColumnName="crid")
+多对多双向外键关联：
+             主控方：
+	@ManyToMany()
+	@JoinTable(name="tea_stu",joinColumns={@JoinColumn(name="studentid",referencedColumnName="sid")},inverseJoinColumns={@JoinColumn(name="teacherid",referencedColumnName="tid")})
+	被控方：
+	@ManyToMany(mappedBy="teachers")//将控制方交给Student
+	@JoinTable(name = "tea_stu", joinColumns = {
+			@JoinColumn(name = "teacherid", referencedColumnName = "tid") }, inverseJoinColumns = {
+					@JoinColumn(name = "studentid", referencedColumnName = "sid") }
+	
+	
+	
+	
+	
+	
+	
+	
